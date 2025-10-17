@@ -43,8 +43,7 @@ public class MecanumDrive extends OpMode {
         front_right.setDirection(DcMotor.Direction.REVERSE);
         front_left.setDirection(DcMotor.Direction.REVERSE);
         front_right.setDirection(DcMotor.Direction.FORWARD);
-        //for boone elementary
-        back_right.setDirection(DcMotor.Direction.REVERSE);
+
 
     }
 
