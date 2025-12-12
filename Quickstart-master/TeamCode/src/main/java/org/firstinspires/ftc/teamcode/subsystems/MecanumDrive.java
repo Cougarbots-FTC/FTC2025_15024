@@ -1,11 +1,16 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.opMode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 /**
  * This is an example minimal implementation of the mecanum drivetrain
@@ -13,26 +18,24 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
  *
  * @author Brandon Gong
  */
-@TeleOp(name="Mecanum Drive Example", group="Iterative Opmode")
-public class MecanumDrive extends OpMode {
+@Disabled
+public class MecanumDrive {
 
-    /*
-     * The mecanum drivetrain involves four separate motors that spin in
-     * different directions and different speeds to produce the desired
-     * movement at the desired speed.
-     */
-
-    // declare and initialize four DcMotors.
     private DcMotor front_left  = null;
     private DcMotor front_right = null;
     private DcMotor back_left   = null;
     private DcMotor back_right  = null;
-    private CRServo leftHang;
-    private CRServo rightHang;
 
-    @Override
-    public void init() {
+    private final Gamepad driver1;
+    private final Gamepad driver2;
+    private ElapsedTime runtime = new ElapsedTime();
 
+    public MecanumDrive(OpMode opMode) {
+
+        driver1 = opMode.gamepad1;
+        driver2 = opMode.gamepad2;
+
+        HardwareMap hardwareMap = opMode.hardwareMap;
         // Name strings must match up with the config on the Robot Controller
         // app.
         front_left   = hardwareMap.get(DcMotor.class, "FrontLeft");
@@ -40,58 +43,137 @@ public class MecanumDrive extends OpMode {
         back_left    = hardwareMap.get(DcMotor.class, "BackLeft");
         back_right   = hardwareMap.get(DcMotor.class, "BackRight");
 
-        front_right.setDirection(DcMotor.Direction.REVERSE);
         front_left.setDirection(DcMotor.Direction.REVERSE);
         front_right.setDirection(DcMotor.Direction.FORWARD);
 
-
     }
 
-    @Override
-    public void loop() {
+    public void teleOp() {
 
-        // Mecanum drive is controlled with three axes: drive (front-and-back),
-        // strafe (left-and-right), and twist (rotating the whole chassis).
+    //initialize gamepad or whatever late
 
+        double speed;
 
-        /*
-         * If we had a gyro and wanted to do field-oriented control, here
-         * is where we would implement it.
-         *
-         * The idea is fairly simple; we have a robot-oriented Cartesian (x,y)
-         * coordinate (strafe, drive), and we just rotate it by the gyro
-         * reading minus the offset that we read in the init() method.
-         * Some rough pseudocode demonstrating:
-         *
-         * if Field Oriented Control:
-         *     get gyro heading
-         *     subtract initial offset from heading
-         *     convert heading to radians (if necessary)
-         *     new strafe = strafe * cos(heading) - drive * sin(heading)
-         *     new drive  = strafe * sin(heading) + drive * cos(heading)
-         *
-         * If you want more understanding on where these rotation formulas come
-         * from, refer to
-         * https://en.wikipedia.org/wiki/Rotation_(mathematics)#Two_dimensions
-         */
+        if(driver1.right_bumper) {
+            speed = 0.5;
+        } else {
+            speed = 1;
+        }
 
         // You may need to multiply some of these by -1 to invert direction of
         // the motor.  This is not an issue with the calculations themselves.
-        double vertical = gamepad1.left_stick_y;
-        double horizontal = gamepad1.left_stick_x * 1.1; //  Multiply by 1.1 to negate imperfect strafing
-        double pivot = gamepad1.right_stick_x;
+        double vertical = driver1.left_stick_y;
+        double horizontal = driver1.left_stick_x * 1.1; //  Multiply by 1.1 to negate imperfect strafing
+        double pivot = driver1.right_stick_x;
 
         //Obtains values for each motor through the positions through values
         //from  left joystick which has up/down(vertical) and left/right values(horizontal), and right joystick which has left/right values(pivot)
         double denominator = Math.max(Math.abs(vertical) + Math.abs(horizontal) + Math.abs(pivot), 1);
-        double rightFrontPower = (vertical + horizontal + pivot) / denominator;
-        double rightBackPower = (vertical - horizontal + pivot) / denominator;
-        double LeftFrontPower = (vertical - horizontal - pivot) / denominator;
-        double LeftBackPower = (vertical + horizontal - pivot) / denominator;
+        double rightFrontPower = (vertical + horizontal + pivot) / denominator * speed;
+        double rightBackPower = (vertical - horizontal + pivot) / denominator * speed;
+        double LeftFrontPower = (vertical - horizontal - pivot) / denominator * speed;
+        double LeftBackPower = (vertical + horizontal - pivot) / denominator * speed;
 
         front_left.setPower(LeftFrontPower);
         front_right.setPower(rightFrontPower);
         back_left.setPower(LeftBackPower);
         back_right.setPower(rightBackPower);
+
+
     }
+
+    public void driveForTime(double seconds, double power) {
+        if (!(opMode instanceof LinearOpMode)) return;
+        LinearOpMode linearOpMode = (LinearOpMode) opMode;
+
+        setAllPower(power);
+        runtime.reset();
+
+        while (linearOpMode.opModeIsActive() && runtime.seconds() < seconds) {
+            opMode.telemetry.addData("Driving", "%.1f sec", runtime.seconds());
+            opMode.telemetry.update();
+        }
+
+        stop();
+    }
+
+    public void strafeForTime(double seconds, double power) {
+        if (!(opMode instanceof LinearOpMode)) return;
+        LinearOpMode linearOpMode = (LinearOpMode) opMode;
+
+        // Mecanum strafing directions
+        front_left.setPower(power);
+        front_right.setPower(-power);
+        back_left.setPower(-power);
+        back_right.setPower(power);
+
+        runtime.reset();
+        while (linearOpMode.opModeIsActive() && runtime.seconds() < seconds) {
+            opMode.telemetry.addData("Strafing", "%.1f sec", runtime.seconds());
+            opMode.telemetry.update();
+        }
+
+        stop();
+    }
+
+
+
+
+    public void turnForTime(double seconds, double power) {
+        if (!(opMode instanceof LinearOpMode)) return;
+        LinearOpMode linearOpMode = (LinearOpMode) opMode;
+
+        // Turning = left side opposite of right
+        front_left.setPower(power);
+        back_left.setPower(power);
+        front_right.setPower(-power);
+        back_right.setPower(-power);
+
+        runtime.reset();
+        while (linearOpMode.opModeIsActive() && runtime.seconds() < seconds) {
+            opMode.telemetry.addData("Turning", "%.1f sec", runtime.seconds());
+            opMode.telemetry.update();
+        }
+
+        stop();
+    }
+
+    public void diagonalForTime(double seconds, double power, boolean forwardRight) {
+        if (!(opMode instanceof LinearOpMode)) return;
+        LinearOpMode linearOpMode = (LinearOpMode) opMode;
+
+        // Forward-right: front_left + back_right
+        if (forwardRight) {
+            front_left.setPower(power);
+            back_right.setPower(power);
+            front_right.setPower(0);
+            back_left.setPower(0);
+        } else {
+            // Forward-left: front_right + back_left
+            front_right.setPower(power);
+            back_left.setPower(power);
+            front_left.setPower(0);
+            back_right.setPower(0);
+        }
+
+        runtime.reset();
+        while (linearOpMode.opModeIsActive() && runtime.seconds() < seconds) {
+            opMode.telemetry.addData("Diagonal Move", "%.1f sec", runtime.seconds());
+            opMode.telemetry.update();
+        }
+
+        stop();
+    }
+
+    public void stop() {
+        setAllPower(0);
+    }
+
+    private void setAllPower(double power) {
+        front_left.setPower(power);
+        front_right.setPower(power);
+        back_left.setPower(power);
+        back_right.setPower(power);
+    }
+
 }
