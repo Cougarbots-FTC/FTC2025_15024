@@ -12,10 +12,15 @@ public class TwoShotAuto extends LinearOpMode {
     private MecanumDriveTest mecanumDrive;
     private Outtake outtake;
     private Sorters sorters;
-
     private Intake intake;
+
     public void runOpMode() {
         mecanumDrive = new MecanumDriveTest(this);
+        outtake = new  Outtake(this);
+        sorters = new Sorters(this);
+        intake = new Intake(this);
+
+
 
         waitForStart();
 
