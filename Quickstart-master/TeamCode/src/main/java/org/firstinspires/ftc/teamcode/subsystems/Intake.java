@@ -65,5 +65,14 @@ public class Intake {
         intakeMotor.setPower(0);
 
     }
+    public void intakeOn(double power)
+    {
+        intakeMotor.setPower(power);
 
+    }
+    public void intakeOff()
+    {
+        intakeMotor.setPower(0);
+
+    }
 }

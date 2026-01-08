@@ -1,0 +1,68 @@
+package org.firstinspires.ftc.teamcode.opModes;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
+import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveTest;
+import org.firstinspires.ftc.teamcode.subsystems.Outtake;
+import org.firstinspires.ftc.teamcode.subsystems.Sorters;
+
+@Autonomous(name="Two Shot Auto", group="Autonomous")
+public class TwoShotAuto extends LinearOpMode {
+    private MecanumDriveTest mecanumDrive;
+    private Outtake outtake;
+    private Sorters sorters;
+
+    private Intake intake;
+    public void runOpMode() {
+        mecanumDrive = new MecanumDriveTest(this);
+
+        waitForStart();
+
+        if (opModeIsActive()) {
+            //potentially move back an inch
+            launchThree();
+            //move to collect the next three
+            //reverse
+            //rotate
+            //strafe
+            //turn on intake
+            //move forward
+            //turn off intake
+            //reverse
+            //go back to goal
+            launchThree();
+
+
+        }
+    }
+
+    /**
+     * This method should launch the three artifacts the robot is holding
+     */
+    public void launchThree() {
+        /*
+
+        Turn on fly wheel
+
+        Open gate 1
+        Run intake
+        Close gate 1
+        Open gate 2
+        Run intake
+        Open gate 1
+
+         */
+        outtake.startShooters(.75);
+        sorters.openGateA();
+        intake.intakeAuto(1000,1);
+        sorters.closeGateA();
+        sorters.openGateB();
+        intake.intakeAuto(1000,1);
+        sorters.closeGates();
+
+
+
+
+    }
+}
