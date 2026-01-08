@@ -21,8 +21,9 @@ public class TwoShotAuto extends LinearOpMode {
         intake = new Intake(this);
 
 
-
         waitForStart();
+
+       sorters.closeGates();
 
         if (opModeIsActive()) {
             //potentially move back an inch
@@ -58,13 +59,17 @@ public class TwoShotAuto extends LinearOpMode {
         Open gate 1
 
          */
-        outtake.startShooters(.75);
+        outtake.startShooters(.90);
+        sleep(6000);
         sorters.openGateA();
-        intake.intakeAuto(1000,1);
+        sleep(1000);
+        intake.intakeAuto(1000,-1);
         sorters.closeGateA();
         sorters.openGateB();
-        intake.intakeAuto(1000,1);
+        sleep(1000);
+        intake.intakeAuto(3000,-1);
         sorters.closeGates();
+
 
 
 

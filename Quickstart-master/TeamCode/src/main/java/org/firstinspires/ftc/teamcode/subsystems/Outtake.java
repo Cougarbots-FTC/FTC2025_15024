@@ -64,14 +64,14 @@ public class Outtake {
     /** Sets power to the shooters, based on power parameter*/
     public void startShooters(double power) {
         leftShooter.setPower(power);
-        //rightShooter.setPower(power);
+        rightShooter.setPower(power);
     }
 
 
     /** Stops both shooter motors */
     public void stopShooter() {
         leftShooter.setPower(0);
-        //rightShooter.setPower(0);
+        rightShooter.setPower(0);
     }
 
 

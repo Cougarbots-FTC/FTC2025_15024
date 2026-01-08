@@ -20,12 +20,12 @@ public class Sorters {
     private boolean prevAButton = false;
     private boolean prevBButton = false;
 
-    public double GATEAOPEN = 1.0;
-    public double GATEACLOSE = 0.0;
+    public double GATEAOPEN = 0.0;
+    public double GATEACLOSE = 1.0;
 
-    public double GATEBOPEN = 1.0;
+    public double GATEBOPEN = 0.0;
 
-    public double GATEBCLOSE = 0.0;
+    public double GATEBCLOSE = 1.0;
 
 
     public Sorters(OpMode opMode) {
@@ -76,7 +76,7 @@ public class Sorters {
     }
 
     public void closeGateB(){
-        servoA.setPosition(GATEBCLOSE);
+        servoB.setPosition(GATEBCLOSE);
     }
 
     public void openGates(){
