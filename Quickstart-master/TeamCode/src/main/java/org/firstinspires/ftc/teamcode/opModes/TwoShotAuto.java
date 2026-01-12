@@ -59,7 +59,7 @@ public class TwoShotAuto extends LinearOpMode {
         Open gate 1
 
          */
-        outtake.startShooters(.90);
+        outtake.startShooters(1);
         sleep(6000);
         sorters.openGateA();
         sleep(1000);
@@ -69,6 +69,7 @@ public class TwoShotAuto extends LinearOpMode {
         sleep(1000);
         intake.intakeAuto(3000,-1);
         sorters.closeGates();
+
 
 
 
