@@ -65,7 +65,6 @@ import org.firstinspires.ftc.teamcode.subsystems.MecanumDrive;
  */
 
 @Autonomous(name="Robot: Auto Drive By Encoder", group="Auto")
-@Disabled
 public class RobotAutoDriveByEncoder_Linear extends LinearOpMode {
 
     /* Declare OpMode members. */
@@ -100,7 +99,7 @@ public class RobotAutoDriveByEncoder_Linear extends LinearOpMode {
         waitForStart();
         if (opModeIsActive())
         {
-            mecanumDrive.encoderDrive(DRIVE_SPEED,  48,  48, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
+            mecanumDrive.encoderDrive(DRIVE_SPEED,  8,  8, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
             mecanumDrive.encoderDrive(TURN_SPEED,   12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
             mecanumDrive.encoderDrive(DRIVE_SPEED, -24, -24, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout
 
