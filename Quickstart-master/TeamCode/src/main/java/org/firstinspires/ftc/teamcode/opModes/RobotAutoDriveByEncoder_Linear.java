@@ -117,13 +117,12 @@ public class RobotAutoDriveByEncoder_Linear extends LinearOpMode {
         // Wait for the game to start (driver presses START)
         waitForStart();
         if (opModeIsActive()) {
-            encoderDriveStrafe(.6, 20, 5);
-            //outtake.startShooters(1);
-            //encoderDrive(DRIVE_SPEED, -6, -1.5, 5.0); //Move back from starting position
-            //launchThree();  // Shoot preloaded balls
-           // encoderDrive(DRIVE_SPEED, -8, -4.5, 5.0); // Reverse enough to get to strafe postion
-           // sleep(500);
-           // encoderDrive(TURN_SPEED, 6, -1, 4.0);  // Turn to get into postion for strafe
+            outtake.startShooters(.85);
+            encoderDrive(DRIVE_SPEED, -6, -1.5, 5.0); //Move back from starting position
+            launchThree();  // Shoot preloaded balls
+            encoderDrive(DRIVE_SPEED, -8, -4.5, 5.0); // Reverse enough to get to strafe postion
+            sleep(500);
+            encoderDrive(TURN_SPEED, 6, -1, 4.0);  // Turn to get into postion for strafe
             //encoderDriveStrafe(DRIVE_SPEED, 10, 14,-14,-14,5.0); //Strafe to line up with balls in front.
             //encoderDrive(DRIVE_SPEED, 4, 4, 5.0); // Go forward to pick up balls
 
@@ -151,6 +150,7 @@ public class RobotAutoDriveByEncoder_Linear extends LinearOpMode {
      *  2) Move runs out of time
      *  3) Driver stops the OpMode running.
      */
+
     public void encoderDrive(double speed,
                              double leftInches, double rightInches,
                              double timeoutS) {
@@ -213,112 +213,27 @@ public class RobotAutoDriveByEncoder_Linear extends LinearOpMode {
             sleep(250);   // optional pause after each move.
         }
     }
-    public void encoderDriveStrafe(double speed,
-                             double ticks, double timeoutS) { //, double frontright, double backleft, double backright, double timeoutS) {
-        int newLeftTarget, newRightTarget, newBackLeftTarget, newBackRightTarget;
-
-        // Ensure that the OpMode is still active
-        if (opModeIsActive()) {
-
-            // Determine new target position, and pass to motor controller
-
-            newLeftTarget = front_left.getCurrentPosition() + (int) (ticks * COUNTS_PER_INCH);
-            newRightTarget = front_right.getCurrentPosition() + (int) (ticks * COUNTS_PER_INCH);
-            newBackLeftTarget = back_left.getCurrentPosition() + (int) (ticks * COUNTS_PER_INCH);
-            newBackRightTarget = back_right.getCurrentPosition() + (int) (ticks * COUNTS_PER_INCH);
-
-            front_left.setTargetPosition(newLeftTarget);
-            front_right.setTargetPosition(newRightTarget);
-            back_left.setTargetPosition(newBackLeftTarget);
-            back_right.setTargetPosition(newBackRightTarget);
 
 
-
-            front_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            front_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            back_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            back_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-
-            // reset the timeout time and start motion.
-            runtime.reset();
-
-
-            front_left.setPower(Math.abs(speed));
-            front_right.setPower(-speed);
-            back_left.setPower(Math.abs(speed));
-            back_right.setPower(-(speed));
-
-            // keep looping while we are still active, and there is time left, and both motors are running.
-            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
-            // its target position, the motion will stop.  This is "safer" in the event that the robot will
-            // always end the motion as soon as possible.
-            // However, if you require that BOTH motors have finished their moves before the robot continues
-            // onto the next step, use (isBusy() || isBusy()) in the loop test.
-
-
-            while (opModeIsActive() &&
-                    (runtime.seconds() < timeoutS) &&
-                    (front_left.isBusy() && front_right.isBusy())) {
-
-                // Display it for the driver.
-                telemetry.addData("Running to", " %7d :%7d", newLeftTarget, newRightTarget);
-                telemetry.addData("Currently at", " at %7d :%7d",
-                        front_left.getCurrentPosition(), front_right.getCurrentPosition());
-                telemetry.update();
-            }
-
-            // Stop all motion;
-            front_left.setPower(0);
-            front_right.setPower(0);
-            back_left.setPower(0);
-            back_right.setPower(0);
-
-            // Turn off RUN_TO_POSITION
-            front_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            front_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            back_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            back_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-            sleep(250);   // optional pause after each move.
-        }
-    }
     public void launchThree() {
-        sleep(2500);
-        intake.intakeAuto(500,-1);
-        sorters.closeGateA();
-
-        sleep(500);
-
-        sorters.openGateB();
-        sleep(200);
-
-        intake.intakeAuto(800,-1);
-        sorters.closeGateB();
 
 
 
-        /*
-        sorters.openGateB();
 
-        sleep(1500);
 
-        intake.intakeAuto(600,-1);
-        sorters.closeGateB();
-
-        /*
         sleep(3500);
         sorters.openGateA();
+        sleep(400);
+        intake.intakeAuto(800,-.5);
         sleep(1000);
-        intake.intakeAuto(1000,-1);
         sorters.closeGateA();
-        sleep(1000);
+       // sleep(1000);
         sorters.openGateB();
-        sleep(1000);
-        intake.intakeAuto(3000,-1);
+        sleep(400);
+        intake.intakeAuto(800,-.5);
         sorters.closeGates();
 
-         */
+
 
     }
 }
