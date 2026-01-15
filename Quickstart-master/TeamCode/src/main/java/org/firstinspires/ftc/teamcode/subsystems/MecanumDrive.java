@@ -23,10 +23,10 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 @Disabled
 public class MecanumDrive {
 
-    private DcMotor front_left  = null;
-    private DcMotor front_right = null;
-    private DcMotor back_left   = null;
-    private DcMotor back_right  = null;
+    public static DcMotor front_left  = null;
+    public static DcMotor front_right = null;
+    public static DcMotor back_left   = null;
+    public static DcMotor back_right  = null;
 
     private final Gamepad driver1;
     private final Gamepad driver2;
@@ -179,6 +179,11 @@ public class MecanumDrive {
     }
     
     public void autoSetUp() {
+        front_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        front_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        back_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        back_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         front_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         front_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 

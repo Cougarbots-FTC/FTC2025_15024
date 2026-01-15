@@ -29,14 +29,23 @@
 
 package org.firstinspires.ftc.teamcode.opModes;
 
-import com.pedropathing.ftc.drivetrains.Mecanum;
+import static org.firstinspires.ftc.teamcode.subsystems.MecanumDrive.back_left;
+import static org.firstinspires.ftc.teamcode.subsystems.MecanumDrive.back_right;
+import static org.firstinspires.ftc.teamcode.subsystems.MecanumDrive.front_left;
+import static org.firstinspires.ftc.teamcode.subsystems.MecanumDrive.front_right;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.MecanumDrive;
+import org.firstinspires.ftc.teamcode.subsystems.Outtake;
+import org.firstinspires.ftc.teamcode.subsystems.Sorters;
+
+
 
 /*
  * This OpMode illustrates the concept of driving a path based on encoder counts.
@@ -71,7 +80,7 @@ public class RobotAutoDriveByEncoder_Linear extends LinearOpMode {
 
     private MecanumDrive mecanumDrive;
 
-    private ElapsedTime     runtime = new ElapsedTime();
+    private ElapsedTime runtime = new ElapsedTime();
 
     // Calculate the COUNTS_PER_INCH for your specific drive train.
     // Go to your motor vendor website to determine your motor's COUNTS_PER_MOTOR_REV
@@ -79,29 +88,51 @@ public class RobotAutoDriveByEncoder_Linear extends LinearOpMode {
     // For example, use a value of 2.0 for a 12-tooth spur gear driving a 24-tooth spur gear.
     // This is gearing DOWN for less speed and more torque.
     // For gearing UP, use a gear ratio less than 1.0. Note this will affect the direction of wheel rotation.
-    static final double     COUNTS_PER_MOTOR_REV    = 537.6 ;    // 5203 yellow jacket gobilda motor
-    static final double     DRIVE_GEAR_REDUCTION    = 13.7 ;     // 13.7 : 1
-    static final double     WHEEL_DIAMETER_INCHES   = 5.511811 ;     // gobilda mechanium diameter in inches
-     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
-                                                      (WHEEL_DIAMETER_INCHES * 3.1415);
-    static final double     DRIVE_SPEED             = 0.6;
-    static final double     TURN_SPEED              = 0.5;
+    static final double COUNTS_PER_MOTOR_REV = 28;
+    ;    // 5203 yellow jacket gobilda motor
+    static final double DRIVE_GEAR_REDUCTION = 13.7;     // 13.7 : 1
+    static final double WHEEL_DIAMETER_INCHES = 4.09449; //5.511811 ;     // gobilda mechanium diameter in inches
+    static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+            (WHEEL_DIAMETER_INCHES * 3.1415);
+    static final double DRIVE_SPEED = 1;
+    static final double TURN_SPEED = 1;
+    private Outtake outtake;
+    private Sorters sorters;
+    private Intake intake;
+
 
     @Override
     public void runOpMode() {
 
         // Initialize the drive system variables.
-       mecanumDrive = new MecanumDrive(this);
-       mecanumDrive.autoSetUp();
-       mecanumDrive.autoTelemetry(this);
+        mecanumDrive = new MecanumDrive(this);
+        mecanumDrive.autoSetUp();
+
+        outtake = new  Outtake(this);
+        sorters = new Sorters(this);
+        intake = new Intake(this);
+
+        mecanumDrive.autoTelemetry(this);
 
         // Wait for the game to start (driver presses START)
         waitForStart();
-        if (opModeIsActive())
-        {
-            mecanumDrive.encoderDrive(DRIVE_SPEED,  8,  8, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
-            mecanumDrive.encoderDrive(TURN_SPEED,   12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
-            mecanumDrive.encoderDrive(DRIVE_SPEED, -24, -24, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout
+        if (opModeIsActive()) {
+            encoderDriveStrafe(.6, 20, 5);
+            //outtake.startShooters(1);
+            //encoderDrive(DRIVE_SPEED, -6, -1.5, 5.0); //Move back from starting position
+            //launchThree();  // Shoot preloaded balls
+           // encoderDrive(DRIVE_SPEED, -8, -4.5, 5.0); // Reverse enough to get to strafe postion
+           // sleep(500);
+           // encoderDrive(TURN_SPEED, 6, -1, 4.0);  // Turn to get into postion for strafe
+            //encoderDriveStrafe(DRIVE_SPEED, 10, 14,-14,-14,5.0); //Strafe to line up with balls in front.
+            //encoderDrive(DRIVE_SPEED, 4, 4, 5.0); // Go forward to pick up balls
+
+         //   encoderDrive(TURN_SPEED, 6, -6, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
+           // encoderDrive(TURN_SPEED, 6, -6, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
+
+            // S1: Forward 47 Inches with 5 Sec timeou
+            //  encoderDrive(TURN_SPEED, 12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
+        //    encoderDrive(DRIVE_SPEED, -24, -24, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout
 
         }
         // Step through each leg of the path,
@@ -120,5 +151,174 @@ public class RobotAutoDriveByEncoder_Linear extends LinearOpMode {
      *  2) Move runs out of time
      *  3) Driver stops the OpMode running.
      */
+    public void encoderDrive(double speed,
+                             double leftInches, double rightInches,
+                             double timeoutS) {
+        int newLeftTarget;
+        int newRightTarget;
 
+        // Ensure that the OpMode is still active
+        if (opModeIsActive()) {
+
+            // Determine new target position, and pass to motor controller
+            newLeftTarget = front_left.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
+            newRightTarget = front_right.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
+            front_left.setTargetPosition(newLeftTarget);
+            front_right.setTargetPosition(newRightTarget);
+
+
+            newLeftTarget = front_left.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
+            newRightTarget = front_right.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
+            front_left.setTargetPosition(newLeftTarget);
+            front_right.setTargetPosition(newRightTarget);
+
+
+
+
+
+            // Turn On RUN_TO_POSITION
+            front_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            front_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            // reset the timeout time and start motion.
+            runtime.reset();
+            front_left.setPower(Math.abs(speed));
+            front_right.setPower(Math.abs(speed));
+
+            // keep looping while we are still active, and there is time left, and both motors are running.
+            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
+            // its target position, the motion will stop.  This is "safer" in the event that the robot will
+            // always end the motion as soon as possible.
+            // However, if you require that BOTH motors have finished their moves before the robot continues
+            // onto the next step, use (isBusy() || isBusy()) in the loop test.
+            while (opModeIsActive() &&
+                    (runtime.seconds() < timeoutS) &&
+                    (front_left.isBusy() && front_right.isBusy())) {
+
+                // Display it for the driver.
+                telemetry.addData("Running to", " %7d :%7d", newLeftTarget, newRightTarget);
+                telemetry.addData("Currently at", " at %7d :%7d",
+                        front_left.getCurrentPosition(), front_right.getCurrentPosition());
+                telemetry.update();
+            }
+
+            // Stop all motion;
+            front_left.setPower(0);
+            front_right.setPower(0);
+
+            // Turn off RUN_TO_POSITION
+            front_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            front_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            sleep(250);   // optional pause after each move.
+        }
+    }
+    public void encoderDriveStrafe(double speed,
+                             double ticks, double timeoutS) { //, double frontright, double backleft, double backright, double timeoutS) {
+        int newLeftTarget, newRightTarget, newBackLeftTarget, newBackRightTarget;
+
+        // Ensure that the OpMode is still active
+        if (opModeIsActive()) {
+
+            // Determine new target position, and pass to motor controller
+
+            newLeftTarget = front_left.getCurrentPosition() + (int) (ticks * COUNTS_PER_INCH);
+            newRightTarget = front_right.getCurrentPosition() + (int) (ticks * COUNTS_PER_INCH);
+            newBackLeftTarget = back_left.getCurrentPosition() + (int) (ticks * COUNTS_PER_INCH);
+            newBackRightTarget = back_right.getCurrentPosition() + (int) (ticks * COUNTS_PER_INCH);
+
+            front_left.setTargetPosition(newLeftTarget);
+            front_right.setTargetPosition(newRightTarget);
+            back_left.setTargetPosition(newBackLeftTarget);
+            back_right.setTargetPosition(newBackRightTarget);
+
+
+
+            front_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            front_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            back_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            back_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
+            // reset the timeout time and start motion.
+            runtime.reset();
+
+
+            front_left.setPower(Math.abs(speed));
+            front_right.setPower(-speed);
+            back_left.setPower(Math.abs(speed));
+            back_right.setPower(-(speed));
+
+            // keep looping while we are still active, and there is time left, and both motors are running.
+            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
+            // its target position, the motion will stop.  This is "safer" in the event that the robot will
+            // always end the motion as soon as possible.
+            // However, if you require that BOTH motors have finished their moves before the robot continues
+            // onto the next step, use (isBusy() || isBusy()) in the loop test.
+
+
+            while (opModeIsActive() &&
+                    (runtime.seconds() < timeoutS) &&
+                    (front_left.isBusy() && front_right.isBusy())) {
+
+                // Display it for the driver.
+                telemetry.addData("Running to", " %7d :%7d", newLeftTarget, newRightTarget);
+                telemetry.addData("Currently at", " at %7d :%7d",
+                        front_left.getCurrentPosition(), front_right.getCurrentPosition());
+                telemetry.update();
+            }
+
+            // Stop all motion;
+            front_left.setPower(0);
+            front_right.setPower(0);
+            back_left.setPower(0);
+            back_right.setPower(0);
+
+            // Turn off RUN_TO_POSITION
+            front_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            front_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            back_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            back_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            sleep(250);   // optional pause after each move.
+        }
+    }
+    public void launchThree() {
+        sleep(2500);
+        intake.intakeAuto(500,-1);
+        sorters.closeGateA();
+
+        sleep(500);
+
+        sorters.openGateB();
+        sleep(200);
+
+        intake.intakeAuto(800,-1);
+        sorters.closeGateB();
+
+
+
+        /*
+        sorters.openGateB();
+
+        sleep(1500);
+
+        intake.intakeAuto(600,-1);
+        sorters.closeGateB();
+
+        /*
+        sleep(3500);
+        sorters.openGateA();
+        sleep(1000);
+        intake.intakeAuto(1000,-1);
+        sorters.closeGateA();
+        sleep(1000);
+        sorters.openGateB();
+        sleep(1000);
+        intake.intakeAuto(3000,-1);
+        sorters.closeGates();
+
+         */
+
+    }
 }
