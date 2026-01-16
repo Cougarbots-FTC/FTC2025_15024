@@ -196,6 +196,9 @@ public class MecanumDrive {
         back_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         back_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        back_left.setDirection(DcMotor.Direction.REVERSE);
+
+
     }
     
     public void autoTelemetry(OpMode opMode)

@@ -126,23 +126,41 @@ public class RobotAutoDriveByEncoder_Linear extends LinearOpMode {
 
 
 
-            front_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            encoderDrive(DRIVE_SPEED, 10, 10, 5);
-            telemetry.addData("Ticks moved", front_left.getCurrentPosition());
+            //front_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+           // encoderDrive(DRIVE_SPEED, 15 , 15 , 5);
+           // telemetry.addData("Ticks moved", front_left.getCurrentPosition());
 
-            /*
 
-           outtake.startShooters(.85);
-            encoderDrive(DRIVE_SPEED, -6, -4, 5.0); //Move back from starting position
+
+            outtake.startShooters(.825);
+            sleep(2000);
+            encoderDrive(DRIVE_SPEED, -4, -4, 5.0); //Move back from starting position to shoot 3
             launchThree();  // Shoot preloaded balls
-            encoderDrive(DRIVE_SPEED, -30, -20, 5.0); // Reverse enough to get to strafe postion
-            sleep(500);
-            encoderDrive(TURN_SPEED, 65, -65, 4.0);  // Turn to get into postion for strafe
-            encoderDrive(DRIVE_SPEED, 60, 60, 5.0); // forward
-            encoderDrive(TURN_SPEED, -55, 40, 4.0);  // Turn to get into postion for strafe
+            encoderDrive(DRIVE_SPEED, -16, -16, 5.0); // Reverse enough to get to turn postion
+            sleep(250); //rest
+            outtake.startShooters(.8);
+            encoderDrive(TURN_SPEED, 25, -25, 4.0);  // Turn to get into postion for forward movement for first line
+            encoderDrive(DRIVE_SPEED, 15,15, 5.0); // forward for first line
+            encoderDrive(TURN_SPEED, -15, 15, 4.0);  // Turn to get into postion for picking up line 1 balls
+            intake.intakeOn(-1);
+
+            encoderDrive(DRIVE_SPEED, 20,20, 5.0); // forward to pick up balls
+            intake.intakeOff();
+
+            encoderDrive(DRIVE_SPEED, -20,-20, 5.0); // backwards to get back to shooting postion
+            encoderDrive(TURN_SPEED, -15, 15, 4.0);  // turn to get back into position
+            encoderDrive(DRIVE_SPEED, 16,16, 5.0); // forward for first line
+            encoderDrive(TURN_SPEED, 8, -8, 4.0);  // Turn to get into postion for forward movement for first line
+            encoderDrive(DRIVE_SPEED, 6, 6, 5.0); // Reverse enough to get to turn postion
 
 
-             */
+            launchThree();
+
+
+
+
+
+
 
 
         }
@@ -175,27 +193,25 @@ public class RobotAutoDriveByEncoder_Linear extends LinearOpMode {
             // Determine new target position, and pass to motor controller
             newLeftTarget = front_left.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
             newRightTarget = front_right.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
+            int newLeftBackTarget = back_left.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
+            int newRightBackTarget = back_right.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
             front_left.setTargetPosition(newLeftTarget);
             front_right.setTargetPosition(newRightTarget);
-
-
-            newLeftTarget = front_left.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
-            newRightTarget = front_right.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
-            front_left.setTargetPosition(newLeftTarget);
-            front_right.setTargetPosition(newRightTarget);
-
-
-
-
+            back_left.setTargetPosition(newLeftBackTarget);
+            back_right.setTargetPosition(newRightBackTarget);
 
             // Turn On RUN_TO_POSITION
             front_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             front_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            back_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            back_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             // reset the timeout time and start motion.
             runtime.reset();
             front_left.setPower(Math.abs(speed));
             front_right.setPower(Math.abs(speed));
+            back_left.setPower(Math.abs(speed));
+            back_right.setPower(Math.abs(speed));
 
             // keep looping while we are still active, and there is time left, and both motors are running.
             // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
@@ -205,7 +221,7 @@ public class RobotAutoDriveByEncoder_Linear extends LinearOpMode {
             // onto the next step, use (isBusy() || isBusy()) in the loop test.
             while (opModeIsActive() &&
                     (runtime.seconds() < timeoutS) &&
-                    (front_left.isBusy() && front_right.isBusy())) {
+                    (back_left.isBusy() && back_right.isBusy())) {
 
                 // Display it for the driver.
                 telemetry.addData("Running to", " %7d :%7d", newLeftTarget, newRightTarget);
@@ -217,10 +233,14 @@ public class RobotAutoDriveByEncoder_Linear extends LinearOpMode {
             // Stop all motion;
             front_left.setPower(0);
             front_right.setPower(0);
+            back_left.setPower(0);
+            back_right.setPower(0);
 
             // Turn off RUN_TO_POSITION
             front_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             front_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            back_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            back_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
             sleep(250);   // optional pause after each move.
         }
@@ -232,17 +252,16 @@ public class RobotAutoDriveByEncoder_Linear extends LinearOpMode {
 
 
 
-
-        sleep(3500);
+        sorters.closeGates();
+        sleep(1000);
         sorters.openGateA();
         sleep(400);
-        intake.intakeAuto(800,-.5);
+        intake.intakeAuto(800,-1);
         sleep(1000);
-        sorters.closeGateA();
        // sleep(1000);
         sorters.openGateB();
         sleep(400);
-        intake.intakeAuto(800,-.5);
+        intake.intakeAuto(1500,-1);
         sorters.closeGates();
 
 
