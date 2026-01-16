@@ -89,11 +89,17 @@ public class RobotAutoDriveByEncoder_Linear extends LinearOpMode {
     // This is gearing DOWN for less speed and more torque.
     // For gearing UP, use a gear ratio less than 1.0. Note this will affect the direction of wheel rotation.
     static final double COUNTS_PER_MOTOR_REV = 28;
-    ;    // 5203 yellow jacket gobilda motor
+    ;    // 5203 yellow jacket gobilda motor (this is cpr below is ppr)
+
     static final double DRIVE_GEAR_REDUCTION = 13.7;     // 13.7 : 1
+
+    static final double COUNTS_PER_WHEEL_REV = COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION;
+
     static final double WHEEL_DIAMETER_INCHES = 4.09449; //5.511811 ;     // gobilda mechanium diameter in inches
-    static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
-            (WHEEL_DIAMETER_INCHES * 3.1415);
+    static final double COUNTS_PER_INCH = 32.25; /*(COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+            (WHEEL_DIAMETER_INCHES * Math.PI);
+            */
+
     static final double DRIVE_SPEED = 1;
     static final double TURN_SPEED = 1;
     private Outtake outtake;
@@ -117,21 +123,27 @@ public class RobotAutoDriveByEncoder_Linear extends LinearOpMode {
         // Wait for the game to start (driver presses START)
         waitForStart();
         if (opModeIsActive()) {
-            outtake.startShooters(.85);
-            encoderDrive(DRIVE_SPEED, -6, -1.5, 5.0); //Move back from starting position
+
+
+
+            front_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            encoderDrive(DRIVE_SPEED, 10, 10, 5);
+            telemetry.addData("Ticks moved", front_left.getCurrentPosition());
+
+            /*
+
+           outtake.startShooters(.85);
+            encoderDrive(DRIVE_SPEED, -6, -4, 5.0); //Move back from starting position
             launchThree();  // Shoot preloaded balls
-            encoderDrive(DRIVE_SPEED, -8, -4.5, 5.0); // Reverse enough to get to strafe postion
+            encoderDrive(DRIVE_SPEED, -30, -20, 5.0); // Reverse enough to get to strafe postion
             sleep(500);
-            encoderDrive(TURN_SPEED, 6, -1, 4.0);  // Turn to get into postion for strafe
-            //encoderDriveStrafe(DRIVE_SPEED, 10, 14,-14,-14,5.0); //Strafe to line up with balls in front.
-            //encoderDrive(DRIVE_SPEED, 4, 4, 5.0); // Go forward to pick up balls
+            encoderDrive(TURN_SPEED, 65, -65, 4.0);  // Turn to get into postion for strafe
+            encoderDrive(DRIVE_SPEED, 60, 60, 5.0); // forward
+            encoderDrive(TURN_SPEED, -55, 40, 4.0);  // Turn to get into postion for strafe
 
-         //   encoderDrive(TURN_SPEED, 6, -6, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
-           // encoderDrive(TURN_SPEED, 6, -6, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
 
-            // S1: Forward 47 Inches with 5 Sec timeou
-            //  encoderDrive(TURN_SPEED, 12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
-        //    encoderDrive(DRIVE_SPEED, -24, -24, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout
+             */
+
 
         }
         // Step through each leg of the path,
