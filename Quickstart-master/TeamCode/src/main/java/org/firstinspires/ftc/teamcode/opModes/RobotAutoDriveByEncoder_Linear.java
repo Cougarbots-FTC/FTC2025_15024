@@ -132,19 +132,19 @@ public class RobotAutoDriveByEncoder_Linear extends LinearOpMode {
 
 
 
-            outtake.startShooters(.825);
+            outtake.setPower(.825);
             sleep(2000);
             encoderDrive(DRIVE_SPEED, -4, -4, 5.0); //Move back from starting position to shoot 3
             launchThree();  // Shoot preloaded balls
             encoderDrive(DRIVE_SPEED, -16, -16, 5.0); // Reverse enough to get to turn postion
             sleep(250); //rest
-            outtake.startShooters(.8);
+            outtake.setPower(.8);
             encoderDrive(TURN_SPEED, 25, -25, 4.0);  // Turn to get into postion for forward movement for first line
             encoderDrive(DRIVE_SPEED, 15,15, 5.0); // forward for first line
             encoderDrive(TURN_SPEED, -15, 15, 4.0);  // Turn to get into postion for picking up line 1 balls
             intake.intakeOn(-1);
 
-            encoderDrive(DRIVE_SPEED, 20,20, 5.0); // forward to pick up balls
+            encoderDrive(DRIVE_SPEED, 22,22, 5.0); // forward to pick up balls
             intake.intakeOff();
 
             encoderDrive(DRIVE_SPEED, -20,-20, 5.0); // backwards to get back to shooting postion
@@ -157,7 +157,8 @@ public class RobotAutoDriveByEncoder_Linear extends LinearOpMode {
             launchThree();
 
 
-
+            encoderDrive(TURN_SPEED,-45,45,5.0);
+            encoderDrive(DRIVE_SPEED, 40, 40, 5.0); // Reverse enough to get to turn postion
 
 
 

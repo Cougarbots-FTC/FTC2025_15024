@@ -34,7 +34,7 @@ public class MainTeleOp extends OpMode {
         outTake.teleOp();
         sort.teleOp();
         intake.teleOp();
-        outTake.addTelemetry(this);
+       // outTake.addTelemetry(this);
 
     }
 

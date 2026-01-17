@@ -96,7 +96,7 @@ public class Outtake {
     }
 
     // Motor helpers
-    private void setPower(double power) {
+    public void setPower(double power) {
         leftShooter.setPower(power);
         rightShooter.setPower(power);
     }
