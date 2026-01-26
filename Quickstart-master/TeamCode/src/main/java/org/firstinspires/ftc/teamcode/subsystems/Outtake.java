@@ -25,7 +25,7 @@ public class Outtake {
     private boolean prevLB = false;
 
     // Power control
-    private double outtakePower = 0.75;
+    private double outtakePower = -0.75;
     private static final double POWER_STEP = 0.05;
     private static final double MAX_POWER = 1.0;
     private static final double MIN_POWER = -1.0;
