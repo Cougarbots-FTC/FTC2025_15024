@@ -132,8 +132,8 @@ public class RobotAutoDriveByEncoder_Linear extends LinearOpMode {
 
 
 
-            outtake.setPower(.825);
-            sleep(2000);
+            outtake.setPower(.85);
+            sleep(4500);
             encoderDrive(DRIVE_SPEED, -4, -4, 5.0); //Move back from starting position to shoot 3
             launchThree();  // Shoot preloaded balls
             encoderDrive(DRIVE_SPEED, -16, -16, 5.0); // Reverse enough to get to turn postion
@@ -256,12 +256,12 @@ public class RobotAutoDriveByEncoder_Linear extends LinearOpMode {
         sorters.closeGates();
         sleep(1000);
         sorters.openGateA();
-        sleep(400);
+        sleep(1000);
         intake.intakeAuto(800,-1);
         sleep(1000);
        // sleep(1000);
         sorters.openGateB();
-        sleep(400);
+        sleep(1000);
         intake.intakeAuto(1500,-1);
         sorters.closeGates();
 
