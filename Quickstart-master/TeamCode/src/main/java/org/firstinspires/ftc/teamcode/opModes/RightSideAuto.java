@@ -29,12 +29,11 @@ public class RightSideAuto extends LinearOpMode {
         waitForStart();
 
         if (opModeIsActive()) {
-            // Example autonomous path for right side:
             mecanumDrive.driveForTime(500, 0.75);   // Drive forward 1.5 sec/mecanumDrive.turnForTime(0.8, 0.4);    // Turn right 0.8 sec
-            //sort.closeGates();
-            //mecanumDrive.strafeForTime(1200, 1);  // Strafe right 1.2 sec
-            //sleep(1500);
-            //mecanumDrive.stop();
+            sort.closeGates();
+            mecanumDrive.strafeForTime(1200, 1);  // Strafe right 1.2 sec
+            sleep(1500);
+            mecanumDrive.stop();
 
             telemetry.addLine("Auto Complete");
             telemetry.update();

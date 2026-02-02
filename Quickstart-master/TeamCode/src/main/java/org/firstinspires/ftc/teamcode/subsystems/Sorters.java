@@ -1,15 +1,13 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-@Disabled
 public class Sorters {
 
-    private final Servo servoA;
-    private final Servo servoB;
+    private final CRServo servoA;
+    private final CRServo servoB;
 
     private final OpMode opMode;
 
@@ -20,20 +18,12 @@ public class Sorters {
     private boolean prevAButton = false;
     private boolean prevBButton = false;
 
-    public double GATEAOPEN = 0.0;
-    public double GATEACLOSE = 1.0;
-
-    public double GATEBOPEN = 0.0;
-
-    public double GATEBCLOSE = 1.0;
-
-
     public Sorters(OpMode opMode) {
         this.opMode = opMode;
 
         HardwareMap hardwareMap = opMode.hardwareMap;
-        servoA = hardwareMap.get(Servo.class, "push1");
-        servoB = hardwareMap.get(Servo.class, "push2");
+        servoA = hardwareMap.get(CRServo.class, "push1");
+        servoB = hardwareMap.get(CRServo.class, "push2");
 
     }
 
@@ -45,13 +35,14 @@ public class Sorters {
         // --- Servo A toggle on A button ---
         if (aPressed && !prevAButton) {
             servoAState = !servoAState;
-            servoA.setPosition(servoAState ? 1.0 : 0.0);
+            servoA.setPower(servoAState ? 1.0 : 0.0);
         }
 
         // --- Servo B toggle on B button ---
         if (bPressed && !prevBButton) {
             servoBState = !servoBState;
-            servoB.setPosition(servoBState ? 1.0 : 0.0);
+            servoB.setPower(servoBState ? 1.0 : 0.0);
+
         }
 
         // Update previous button states
@@ -59,34 +50,34 @@ public class Sorters {
         prevBButton = bPressed;
 
         // Optional telemetry
-        opMode.telemetry.addData("Servo A Pos", servoA.getPosition());
-        opMode.telemetry.addData("Servo B Pos", servoB.getPosition());
+        opMode.telemetry.addData("Servo A Pos", servoA.getPower());
+        opMode.telemetry.addData("Servo B Pos", servoB.getPower());
     }
 
-    public void openGateA(){
-        servoA.setPosition(GATEAOPEN);
+    public void turnOnGateA(){
+        servoA.setPower(1);
     }
 
-    public void openGateB(){
-        servoB.setPosition(GATEBOPEN);
+    public void turnOnGateB(){
+        servoB.setPower(1);
     }
 
-    public void closeGateA(){
-        servoA.setPosition(GATEACLOSE);
+    public void turnOffGateA(){
+        servoA.setPower(0);
     }
 
-    public void closeGateB(){
-        servoB.setPosition(GATEBCLOSE);
+    public void turnOffGateB(){
+        servoB.setPower(0);
     }
 
     public void openGates(){
-        openGateA();
-        openGateB();
+        turnOnGateA();
+        turnOnGateB();
     }
 
     public void closeGates(){
-        closeGateA();
-        closeGateB();
+        turnOffGateA();
+        turnOffGateB();
     }
 
 }

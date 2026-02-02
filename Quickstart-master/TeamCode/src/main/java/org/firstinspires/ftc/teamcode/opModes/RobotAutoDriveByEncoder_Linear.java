@@ -255,12 +255,12 @@ public class RobotAutoDriveByEncoder_Linear extends LinearOpMode {
 
         sorters.closeGates();
         sleep(1000);
-        sorters.openGateA();
+        sorters.turnOnGateA();
         sleep(1000);
         intake.intakeAuto(800,-1);
         sleep(1000);
        // sleep(1000);
-        sorters.openGateB();
+        sorters.turnOnGateB();
         sleep(1000);
         intake.intakeAuto(1500,-1);
         sorters.closeGates();
