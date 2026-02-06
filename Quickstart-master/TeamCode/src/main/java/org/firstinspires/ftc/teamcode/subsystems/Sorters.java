@@ -15,8 +15,8 @@ public class Sorters {
     private boolean servoBState = false;
 
     // For button debounce (to avoid multiple toggles per press)
+    private boolean prevYButton = false;
     private boolean prevAButton = false;
-    private boolean prevBButton = false;
 
     public Sorters(OpMode opMode) {
         this.opMode = opMode;
@@ -25,29 +25,44 @@ public class Sorters {
         servoA = hardwareMap.get(CRServo.class, "push1");
         servoB = hardwareMap.get(CRServo.class, "push2");
 
+
     }
 
 
     public void teleOp() {
-        boolean aPressed = opMode.gamepad1.a;
-        boolean bPressed = opMode.gamepad1.b;
+        boolean yPressed = opMode.gamepad2.y;
+        boolean aPressed = opMode.gamepad2.a;
 
-        // --- Servo A toggle on A button ---
+        // --- Servo A and Servo B toggle forward on Y button ---
+        if (yPressed && !prevYButton) {
+            servoAState = !servoAState;
+            servoBState = !servoBState;
+
+            servoA.setPower(servoAState ? -1.0 : 0.0);
+            servoB.setPower(servoBState ? 1.0 : 0.0);
+        }
+
+        // --- Servo A toggle backwards A button ---
         if (aPressed && !prevAButton) {
             servoAState = !servoAState;
-            servoA.setPower(servoAState ? 1.0 : 0.0);
-        }
-
-        // --- Servo B toggle on B button ---
-        if (bPressed && !prevBButton) {
             servoBState = !servoBState;
-            servoB.setPower(servoBState ? 1.0 : 0.0);
+
+            servoA.setPower(servoAState ? 1.0 : 0.0);
+            servoB.setPower(servoBState ? -1.0 : 0.0);
+
+
 
         }
+
+
 
         // Update previous button states
+        prevYButton = yPressed;
         prevAButton = aPressed;
-        prevBButton = bPressed;
+
+    }
+
+    public void addTelemetry(OpMode opMode) {
 
         // Optional telemetry
         opMode.telemetry.addData("Servo A Pos", servoA.getPower());
@@ -55,11 +70,11 @@ public class Sorters {
     }
 
     public void turnOnGateA(){
-        servoA.setPower(1);
+        servoA.setPower(-1);
     }
 
     public void turnOnGateB(){
-        servoB.setPower(1);
+        servoB.setPower(-1);
     }
 
     public void turnOffGateA(){

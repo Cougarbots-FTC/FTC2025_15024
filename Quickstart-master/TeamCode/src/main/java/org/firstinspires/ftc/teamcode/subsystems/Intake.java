@@ -45,6 +45,7 @@ public class Intake {
             power = INTAKE_POWER;
         }
         else if(driver2.right_trigger > 0){
+
             power = -INTAKE_POWER;
         }
         else{
@@ -67,7 +68,10 @@ public class Intake {
     }
     public void intakeOn(double power)
     {
+
         intakeMotor.setPower(power);
+        //servoA.setPower(servoAState ? 1.0 : 0.0);
+       // servoB.setPower(servoBState ? 1.0 : 0.0);
 
     }
     public void intakeOff()
