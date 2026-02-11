@@ -41,10 +41,10 @@ public class Intake {
 
     public void teleOp(){
         double power = 0;
-        if(driver2.left_trigger > 0){
+        if(driver1.left_trigger > 0){
             power = INTAKE_POWER;
         }
-        else if(driver2.right_trigger > 0){
+        else if(driver1.right_trigger > 0){
 
             power = -INTAKE_POWER;
         }
@@ -70,8 +70,6 @@ public class Intake {
     {
 
         intakeMotor.setPower(power);
-        //servoA.setPower(servoAState ? 1.0 : 0.0);
-       // servoB.setPower(servoBState ? 1.0 : 0.0);
 
     }
     public void intakeOff()

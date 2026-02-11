@@ -26,6 +26,7 @@ public class MecanumDrive {
     public static DcMotor front_left  = null;
     public static DcMotor front_right = null;
     public static DcMotor back_left   = null;
+
     public static DcMotor back_right  = null;
 
     private final Gamepad driver1;
@@ -47,6 +48,9 @@ public class MecanumDrive {
 
         front_left.setDirection(DcMotor.Direction.REVERSE);
         front_right.setDirection(DcMotor.Direction.FORWARD);
+
+
+
 
     }
 

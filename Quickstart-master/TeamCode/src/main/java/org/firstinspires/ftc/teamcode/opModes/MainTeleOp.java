@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.opModes;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.subsystems.Delivery;
+import org.firstinspires.ftc.teamcode.subsystems.FlyWheelPID;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveTest;
 import org.firstinspires.ftc.teamcode.subsystems.Outtake;
@@ -12,18 +14,19 @@ import org.firstinspires.ftc.teamcode.subsystems.Sorters;
 public class MainTeleOp extends OpMode {
 
     private MecanumDriveTest mecanumDrive;
-    private Outtake outTake;
+    private FlyWheelPID outTake;
     private Intake intake;
-
+    private Delivery delivery;
     private Sorters sort;
 
     @Override
 
     public void init() {
         intake = new Intake(this);
-        outTake = new Outtake(this);
+        outTake = new FlyWheelPID(this);
         mecanumDrive = new MecanumDriveTest(this);
         sort = new Sorters(this);
+        delivery = new Delivery(this);
 
 
     }
@@ -34,7 +37,8 @@ public class MainTeleOp extends OpMode {
         outTake.teleOp();
         sort.teleOp();
         intake.teleOp();
-        sort.addTelemetry(this);
+        delivery.teleOp();
+        outTake.sendTelemetry();
 
     }
 

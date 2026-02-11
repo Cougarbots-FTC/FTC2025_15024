@@ -70,7 +70,7 @@ public class Sorters {
     }
 
     public void turnOnGateA(){
-        servoA.setPower(-1);
+        servoA.setPower(1);
     }
 
     public void turnOnGateB(){
