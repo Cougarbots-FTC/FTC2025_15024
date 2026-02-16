@@ -20,6 +20,8 @@ public class Intake {
     private double INTAKE_POWER = 1;
     private final Gamepad driver1;
     private final Gamepad driver2;
+    private boolean servoAState = false;
+    private boolean servoBState = false;
 
     public Intake(OpMode opMode) {
         this.opMode = opMode;
@@ -47,6 +49,14 @@ public class Intake {
         else if(driver1.right_trigger > 0){
 
             power = -INTAKE_POWER;
+        }
+
+        else if(driver2.left_trigger > 0){
+            power = .5;
+        }
+        else if (driver2.right_trigger> 0) {
+            power = -.5;
+
         }
         else{
             power = 0;

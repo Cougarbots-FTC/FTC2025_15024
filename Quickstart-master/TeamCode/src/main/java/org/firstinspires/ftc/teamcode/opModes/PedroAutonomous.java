@@ -75,7 +75,7 @@ public class PedroAutonomous extends OpMode {
 
                                     new Pose(45.000, 84.000)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(144), Math.toRadians(180))
+                    ).setLinearHeadingInterpolation(Math.toRadians(144), Math.toRadians(0))
 
                     .build();
 

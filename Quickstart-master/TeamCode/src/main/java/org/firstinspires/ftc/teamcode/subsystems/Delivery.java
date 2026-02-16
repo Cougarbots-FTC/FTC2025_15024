@@ -41,12 +41,13 @@ public class Delivery {
 
     public void teleOp(){
         double power = 0;
+
         if(driver2.left_trigger > 0){
-            power = DELIVERY_POWER;
+            power = -.8;
         }
         else if(driver2.right_trigger > 0){
 
-            power = -DELIVERY_POWER;
+            power = .8;
         }
         else{
             power = 0;

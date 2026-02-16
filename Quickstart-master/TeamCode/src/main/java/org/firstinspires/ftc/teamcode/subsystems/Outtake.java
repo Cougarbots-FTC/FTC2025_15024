@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -11,6 +12,8 @@ public class Outtake {
     // Motors
     private DcMotorEx leftShooter;
     private DcMotorEx rightShooter;
+
+    //Servos
 
     // OpMode & Gamepads
     private final OpMode opMode;
@@ -23,6 +26,8 @@ public class Outtake {
     private boolean prevX = false;
     private boolean prevRB = false;
     private boolean prevLB = false;
+
+    private int shootCount = 0;
 
     // Power control
     private double outtakePower = -0.8;
@@ -107,9 +112,14 @@ public class Outtake {
     }
 
     // Telemetry
-    private void sendTelemetry() {
+    public void sendTelemetry() {
         opMode.telemetry.addData("Outtake", outtakeOn ? "ON" : "OFF");
         opMode.telemetry.addData("Outtake Power", "%.2f", outtakePower);
+        opMode.telemetry.addData("Velocity: ", leftShooter.getVelocity());
+        opMode.telemetry.addData("Velocity: ", rightShooter.getVelocity());
         opMode.telemetry.update();
+
     }
+
+
 }
